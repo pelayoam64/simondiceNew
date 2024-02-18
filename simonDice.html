@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Dice</title>
+    <script>
+        const colores = ['rojo', 'verde', 'azul', 'amarillo'];
+        var nivel = 1;
+        var secuenciaPersona = [];
+        var secuencia = [];
+        const tiempoEntreColores = 500; 
+
+        function generarColores() {
+            secuencia = [];
+            for (let i = 0; i < nivel; i++) {
+                const colorAleatorio = colores[Math.floor(Math.random() * 4)];
+                secuencia.push(colorAleatorio);
+            }
+        }
+
+        function iniciarJuego() {
+            nivel = 1;
+            secuenciaPersona = [];
+            generarColores();
+            mostrarMensaje("Repite la secuencia.");
+            setTimeout(mostrarSecuencia, 2000);
+        }
+
+        function mostrarSecuencia() {
+            for (let i = 0; i < secuencia.length; i++) {
+                setTimeout(() => {
+                    resaltarColor(secuencia[i]);
+                }, i * tiempoEntreColores * nivel);
+            }
+        }
+
+        function resaltarColor(color) {
+            const botonColor = document.getElementById(color);
+            botonColor.classList.add('resaltado');
+            setTimeout(() => {
+                botonColor.classList.remove('resaltado');
+            }, 500);
+        }
+
+      
+
+        function seleccionarColor(color) {
+            secuenciaPersona.push(color);
+            if (secuenciaPersona.length === secuencia.length) {
+                if (verificarSecuencia()) {
+                    setTimeout(() => {
+                        nivel++;
+                        secuenciaPersona = [];
+                        generarColores();
+                        mostrarMensaje("Correcto.");
+                        setTimeout(mostrarSecuencia, 2000);
+                    }, 1000);
+                } else {
+                    mostrarMensaje("Perdiste!Tu puntuación final es: " + (nivel - 1));
+                }
+            }
+        }
+
+        function verificarSecuencia() {
+            for (let i = 0; i < secuenciaPersona.length; i++) {
+                if (secuenciaPersona[i] !== secuencia[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function mostrarMensaje(mensaje) {
+            document.getElementById("mensaje").textContent = mensaje;
+        }
+    </script>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 20px;
+            cursor: pointer;
+            border: 5px solid transparent;
+            border-radius: 50%;
+            outline: none;
+            transition: transform 0.5s, border-color 0.5s;
+        }
+
+        #mensaje {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .color {
+            width: 120px;
+            height: 120px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .color:hover {
+            transform: scale(1.1);
+        }
+
+        .resaltado {
+            transform: scale(1.1);
+            border-color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simon Dice</h1>
+    <div id="mensaje"></div>
+    <div>
+        <button id="rojo" class="color" style="background-color: red;" onclick="seleccionarColor('rojo')"></button>
+        <button id="verde" class="color" style="background-color: green;" onclick="seleccionarColor('verde')"></button>
+        <button id="azul" class="color" style="background-color: blue;" onclick="seleccionarColor('azul')"></button>
+        <button id="amarillo" class="color" style="background-color: yellow; " onclick="seleccionarColor('amarillo')"></button>
+    </div>
+    <button onclick="iniciarJuego()">Empieza</button>
+</body>
+</html>
